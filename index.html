@@ -1,9 +1,674 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>My Personal Website</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sambhav Jain — Electronics Engineer</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --white: #ffffff;
+  --cream: #faf9f6;
+  --ink: #0d0d0d;
+  --ink2: #1a1a1a;
+  --orange: #ff4d00;
+  --lime: #b8ff00;
+  --sky: #00d4ff;
+  --violet: #7c3aed;
+  --muted: #888;
+  --border: #e8e4df;
+  --card-bg: #f5f3ef;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--cream);color:var(--ink);font-family:'DM Sans',sans-serif;overflow-x:hidden;cursor:none;}
+
+/* CURSOR */
+#cur{position:fixed;width:12px;height:12px;background:var(--orange);border-radius:50%;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);mix-blend-mode:multiply;transition:width .2s,height .2s,background .2s;}
+#cur-trail{position:fixed;width:40px;height:40px;border:1.5px solid var(--orange);border-radius:50%;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);opacity:.4;transition:width .35s cubic-bezier(.23,1,.32,1),height .35s cubic-bezier(.23,1,.32,1),opacity .35s;}
+body:has(a:hover) #cur,body:has(button:hover) #cur{width:20px;height:20px;background:var(--lime);}
+body:has(a:hover) #cur-trail,body:has(button:hover) #cur-trail{width:60px;height:60px;border-color:var(--lime);opacity:.7;}
+
+/* CANVAS */
+#bgc{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.6;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:20px 56px;display:flex;align-items:center;justify-content:space-between;background:rgba(250,249,246,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:'Syne',sans-serif;font-size:1.15rem;font-weight:800;letter-spacing:-.5px;color:var(--ink);}
+.nav-logo em{color:var(--orange);font-style:normal;}
+.nav-links{display:flex;gap:36px;list-style:none;}
+.nav-links a{font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s;position:relative;}
+.nav-links a:hover{color:var(--ink);}
+.nav-links a::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1.5px;background:var(--orange);transition:width .3s;}
+.nav-links a:hover::after{width:100%;}
+.nav-cta{font-family:'Syne',sans-serif;font-size:.75rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;text-decoration:none;padding:10px 22px;background:var(--ink);color:var(--white);border-radius:100px;transition:background .2s,transform .2s;}
+.nav-cta:hover{background:var(--orange);transform:scale(1.04);}
+
+/* HERO */
+#hero{min-height:100vh;padding:140px 56px 80px;position:relative;overflow:hidden;display:flex;align-items:center;}
+.blob1{position:absolute;top:-200px;right:-200px;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle at 40% 40%,rgba(255,77,0,.12) 0%,rgba(184,255,0,.08) 40%,transparent 70%);animation:bfloat 8s ease-in-out infinite;pointer-events:none;}
+.blob2{position:absolute;bottom:-150px;left:-100px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(0,212,255,.1) 0%,transparent 70%);animation:bfloat 11s ease-in-out infinite reverse;pointer-events:none;}
+@keyframes bfloat{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(30px,-40px) scale(1.05);}}
+.hero-inner{max-width:1200px;width:100%;position:relative;z-index:1;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:2px;text-transform:uppercase;color:var(--orange);background:rgba(255,77,0,.08);border:1px solid rgba(255,77,0,.2);padding:7px 16px;border-radius:100px;margin-bottom:32px;}
+.hero-eyebrow::before{content:'◉';animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+h1.hero-name{font-family:'Syne',sans-serif;font-size:clamp(4rem,9vw,9rem);font-weight:800;line-height:.95;letter-spacing:-3px;color:var(--ink);margin-bottom:32px;}
+h1.hero-name .stroke{-webkit-text-stroke:2px var(--ink);color:transparent;}
+h1.hero-name .hl{position:relative;display:inline-block;color:var(--orange);}
+h1.hero-name .hl::after{content:'';position:absolute;bottom:4px;left:0;right:0;height:8px;background:var(--lime);z-index:-1;transform:skewX(-3deg);}
+.hero-row{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:end;margin-top:48px;}
+.hero-desc{font-size:1.15rem;font-weight:300;line-height:1.7;color:#444;max-width:460px;}
+.hero-desc strong{color:var(--ink);font-weight:500;}
+.hero-rc{display:flex;flex-direction:column;gap:24px;align-items:flex-end;}
+.hero-stats{display:flex;gap:0;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--white);}
+.hstat{padding:20px 28px;text-align:center;border-right:1px solid var(--border);}
+.hstat:last-child{border-right:none;}
+.hstat-num{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:var(--ink);display:block;letter-spacing:-1px;}
+.hstat-num .u{font-size:1.2rem;color:var(--orange);}
+.hstat-label{font-size:.65rem;font-family:'DM Mono',monospace;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);display:block;margin-top:2px;}
+.hero-badge{display:flex;align-items:center;gap:12px;padding:14px 20px;background:var(--lime);border-radius:12px;font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700;color:var(--ink);}
+.hero-badge span{background:var(--ink);color:var(--lime);padding:3px 10px;border-radius:6px;font-size:.72rem;}
+.hero-ctas{display:flex;gap:14px;flex-wrap:wrap;margin-top:40px;}
+.btn-fill{font-family:'Syne',sans-serif;font-size:.78rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;text-decoration:none;padding:15px 34px;background:var(--ink);color:var(--white);border-radius:100px;border:2px solid var(--ink);transition:all .25s;display:inline-block;}
+.btn-fill:hover{background:var(--orange);border-color:var(--orange);transform:translateY(-2px);}
+.btn-outline{font-family:'Syne',sans-serif;font-size:.78rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;text-decoration:none;padding:15px 34px;background:transparent;color:var(--ink);border-radius:100px;border:2px solid var(--ink);transition:all .25s;display:inline-block;}
+.btn-outline:hover{background:var(--ink);color:var(--white);transform:translateY(-2px);}
+
+/* MARQUEE */
+.marquee-wrap{position:relative;z-index:1;overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--ink);padding:16px 0;margin:0;}
+.marquee-track{display:flex;white-space:nowrap;animation:marq 22s linear infinite;}
+.marquee-track span{font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--white);padding:0 32px;}
+.marquee-track span.acc{color:var(--lime);}
+@keyframes marq{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* SECTIONS */
+section.ms{max-width:1200px;margin:0 auto;padding:100px 56px;position:relative;z-index:1;}
+.sec-label{font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:3px;text-transform:uppercase;color:var(--orange);display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.sec-label::before{content:'';width:32px;height:1.5px;background:var(--orange);}
+h2.sec-title{font-family:'Syne',sans-serif;font-size:clamp(2rem,4vw,3.2rem);font-weight:800;letter-spacing:-1.5px;color:var(--ink);margin-bottom:56px;}
+h2.sec-title em{font-style:normal;color:var(--orange);}
+
+/* CARDS */
+.projects-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.card{background:var(--white);border:1px solid var(--border);border-radius:20px;padding:36px;transition:transform .3s cubic-bezier(.23,1,.32,1),box-shadow .3s,border-color .3s;position:relative;overflow:hidden;cursor:none;}
+.card:hover{transform:translateY(-6px);box-shadow:0 24px 60px rgba(0,0,0,.1);border-color:rgba(255,77,0,.3);}
+.card-num{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:2px;color:var(--muted);margin-bottom:14px;}
+.card h3{font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:700;color:var(--ink);margin-bottom:8px;letter-spacing:-.3px;}
+.card-date{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:1.5px;color:var(--muted);margin-bottom:16px;}
+.card p{font-size:.9rem;color:#555;line-height:1.75;margin-bottom:22px;}
+.tags{display:flex;flex-wrap:wrap;gap:7px;}
+.tag{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.5px;padding:5px 12px;border-radius:100px;background:rgba(255,77,0,.07);border:1px solid rgba(255,77,0,.15);color:var(--orange);text-transform:uppercase;}
+.tag.g{background:rgba(184,255,0,.15);border-color:rgba(184,255,0,.3);color:#4a6600;}
+.tag.s{background:rgba(0,212,255,.08);border-color:rgba(0,212,255,.2);color:#0078a0;}
+.wide{grid-column:span 2;}
+.card.feat{background:var(--ink);border-color:var(--ink);}
+.card.feat h3,.card.feat .card-num,.card.feat .card-date{color:var(--white);}
+.card.feat .card-num,.card.feat .card-date{color:#555;}
+.card.feat p{color:#999;}
+.card.feat .tag{background:rgba(184,255,0,.12);border-color:rgba(184,255,0,.25);color:var(--lime);}
+.card.feat:hover{border-color:var(--orange);}
+
+/* EXPERIENCE */
+.exp-list{display:flex;flex-direction:column;gap:16px;}
+.exp-card{display:grid;grid-template-columns:240px 1fr;background:var(--white);border:1px solid var(--border);border-radius:20px;overflow:hidden;transition:box-shadow .3s,transform .3s;cursor:none;}
+.exp-card:hover{transform:translateX(6px);box-shadow:0 12px 40px rgba(0,0,0,.08);}
+.exp-left{padding:32px 28px;background:var(--card-bg);border-right:1px solid var(--border);display:flex;flex-direction:column;justify-content:space-between;}
+.exp-role{font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700;color:var(--orange);margin-bottom:6px;}
+.exp-company{font-size:.9rem;font-weight:500;color:var(--ink);margin-bottom:6px;}
+.exp-period{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:1.5px;color:var(--muted);}
+.exp-body{padding:32px;}
+.exp-body ul{list-style:none;display:flex;flex-direction:column;gap:10px;}
+.exp-body li{font-size:.88rem;color:#555;line-height:1.65;display:flex;gap:10px;}
+.exp-body li::before{content:'→';color:var(--orange);flex-shrink:0;font-weight:500;}
+
+/* SKILLS */
+.skills-wrapper{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.skill-card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:24px;transition:transform .2s,box-shadow .2s;cursor:none;}
+.skill-card:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,.07);}
+.skill-card-title{font-family:'Syne',sans-serif;font-size:.8rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:16px;color:var(--ink);display:flex;align-items:center;gap:8px;}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--orange);}
+.skill-chips{display:flex;flex-wrap:wrap;gap:7px;}
+.chip{font-size:.78rem;padding:6px 14px;border-radius:100px;background:var(--card-bg);color:#444;border:1px solid var(--border);transition:all .2s;font-family:'DM Sans',sans-serif;}
+.chip:hover{background:var(--ink);color:var(--white);border-color:var(--ink);}
+
+/* EDUCATION */
+.edu-hero{background:var(--ink);border-radius:24px;padding:48px;display:grid;grid-template-columns:1fr auto;gap:40px;align-items:center;margin-bottom:24px;position:relative;overflow:hidden;}
+.edu-hero::before{content:'';position:absolute;top:-80px;right:0;width:400px;height:400px;background:radial-gradient(circle,rgba(184,255,0,.07),transparent 70%);pointer-events:none;}
+.edu-degree{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--white);letter-spacing:-.5px;margin-bottom:8px;}
+.edu-prog{font-size:1rem;color:#888;font-weight:300;margin-bottom:8px;}
+.edu-uni{font-size:1.1rem;color:var(--lime);font-weight:500;}
+.edu-period{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:2px;color:#555;margin-top:8px;}
+.gpa-block{text-align:center;}
+.gpa-big{font-family:'Syne',sans-serif;font-size:5rem;font-weight:800;color:var(--lime);line-height:1;letter-spacing:-3px;}
+.gpa-sub{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:2px;color:#555;margin-top:4px;}
+.honour-pill{display:inline-flex;align-items:center;gap:8px;margin-top:18px;padding:8px 20px;background:rgba(184,255,0,.1);border:1px solid rgba(184,255,0,.25);border-radius:100px;font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:2px;color:var(--lime);text-transform:uppercase;}
+
+/* COURSES TEASER */
+.courses-teaser{background:var(--white);border:1px solid var(--border);border-radius:20px;padding:32px;margin-bottom:24px;}
+.courses-teaser-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:20px;color:var(--ink);}
+.term-pills{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px;}
+.term-pill{display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:100px;background:var(--card-bg);border:1px solid var(--border);font-size:.8rem;font-weight:500;color:var(--ink);}
+.gpa-badge{font-family:'DM Mono',monospace;font-size:.65rem;padding:2px 8px;border-radius:100px;background:var(--orange);color:var(--white);}
+.btn-courses{font-family:'Syne',sans-serif;font-size:.78rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:13px 28px;background:var(--ink);color:var(--white);border-radius:100px;border:none;cursor:none;transition:background .2s,transform .2s;display:inline-block;}
+.btn-courses:hover{background:var(--orange);transform:scale(1.03);}
+
+/* AWARDS */
+.awards-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.award-card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:22px 24px;display:flex;align-items:flex-start;gap:16px;transition:transform .2s,box-shadow .2s;cursor:none;}
+.award-card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,.07);}
+.award-icon{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--lime),#80cc00);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+.award-name{font-size:.88rem;font-weight:500;color:var(--ink);margin-bottom:4px;line-height:1.4;}
+.award-when{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:1.5px;color:var(--muted);}
+
+/* TUTORING */
+.tutor-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.tutor-card{background:var(--white);border:1px solid var(--border);border-radius:20px;padding:32px;position:relative;overflow:hidden;transition:transform .3s,box-shadow .3s;cursor:none;}
+.tutor-card:hover{transform:translateY(-5px);box-shadow:0 20px 50px rgba(0,0,0,.1);}
+.tutor-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--orange),var(--lime));}
+.tutor-role{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;color:var(--ink);margin-bottom:6px;}
+.tutor-org{font-size:.9rem;color:var(--orange);font-weight:500;margin-bottom:4px;}
+.tutor-period{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:1.5px;color:var(--muted);margin-bottom:18px;}
+.tutor-card ul{list-style:none;display:flex;flex-direction:column;gap:8px;}
+.tutor-card li{font-size:.85rem;color:#555;line-height:1.6;display:flex;gap:8px;}
+.tutor-card li::before{content:'•';color:var(--orange);flex-shrink:0;font-weight:700;}
+.tspan2{grid-column:span 2;}
+
+/* VOLUNTEER */
+.vol-list{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.vol-card{background:var(--card-bg);border:1px solid var(--border);border-radius:20px;padding:32px;border-left:4px solid var(--orange);transition:transform .2s,box-shadow .2s;}
+.vol-card:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,.07);}
+.vol-role{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:var(--ink);margin-bottom:5px;}
+.vol-org{font-size:.88rem;color:var(--orange);font-weight:500;margin-bottom:4px;}
+.vol-period{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:1.5px;color:var(--muted);margin-bottom:14px;}
+.vol-card p{font-size:.85rem;color:#555;line-height:1.65;}
+
+/* CONTACT */
+#contact{background:var(--ink);padding:100px 0;position:relative;z-index:1;}
+#contact .inner{max-width:1200px;margin:0 auto;padding:0 56px;}
+#contact .sec-label{color:var(--lime);}
+#contact .sec-label::before{background:var(--lime);}
+#contact h2.sec-title{color:var(--white);margin-bottom:16px;}
+#contact h2.sec-title em{color:var(--lime);}
+.contact-sub{color:#555;font-size:1rem;margin-bottom:56px;font-weight:300;}
+.contact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.contact-tile{background:#111;border:1px solid #222;border-radius:20px;padding:28px;text-decoration:none;transition:border-color .2s,transform .2s,background .2s;display:flex;flex-direction:column;gap:8px;cursor:none;}
+.contact-tile:hover{border-color:var(--orange);background:#181818;transform:translateY(-4px);}
+.ct-type{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:2px;text-transform:uppercase;color:#444;}
+.ct-val{font-size:.95rem;font-weight:500;color:var(--white);}
+.ct-arr{font-size:1.4rem;color:#333;transition:color .2s,transform .2s;}
+.contact-tile:hover .ct-arr{color:var(--orange);transform:translate(4px,-4px);}
+
+/* FOOTER */
+footer{background:var(--ink);border-top:1px solid #1a1a1a;padding:24px 56px;display:flex;align-items:center;justify-content:space-between;font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:1.5px;color:#333;position:relative;z-index:1;}
+
+/* MODAL */
+#courses-modal{position:fixed;inset:0;z-index:9999;background:rgba(13,13,13,.96);backdrop-filter:blur(20px);display:none;align-items:flex-start;justify-content:center;overflow-y:auto;padding:40px 20px;}
+#courses-modal.open{display:flex;}
+.modal-inner{width:100%;max-width:1000px;background:var(--cream);border-radius:28px;padding:48px;position:relative;animation:min .4s cubic-bezier(.23,1,.32,1);}
+@keyframes min{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:none;}}
+.modal-close{position:absolute;top:24px;right:24px;width:42px;height:42px;border-radius:50%;background:var(--ink);color:var(--white);border:none;font-size:1.1rem;cursor:none;display:flex;align-items:center;justify-content:center;transition:background .2s,transform .2s;}
+.modal-close:hover{background:var(--orange);transform:rotate(90deg);}
+.modal-title{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;letter-spacing:-1px;margin-bottom:8px;}
+.modal-sub{color:var(--muted);font-size:.9rem;margin-bottom:40px;}
+.term-block{margin-bottom:32px;}
+.term-header{display:flex;align-items:center;justify-content:space-between;background:var(--ink);color:var(--white);padding:14px 20px;border-radius:12px 12px 0 0;}
+.term-name{font-family:'Syne',sans-serif;font-size:.9rem;font-weight:700;}
+.term-gpa{font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:1px;}
+.term-gpa .gv{color:var(--lime);}
+.course-table{width:100%;border-collapse:collapse;}
+.course-table thead tr{background:var(--card-bg);}
+.course-table th{padding:10px 16px;text-align:left;font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);}
+.course-table td{padding:12px 16px;border-bottom:1px solid var(--border);font-size:.85rem;color:#444;}
+.course-table tr:last-child td{border-bottom:none;}
+.grade{font-family:'DM Mono',monospace;font-weight:500;color:var(--orange);}
+.aplus{color:#16a34a !important;}
+.honour-row{margin-top:0;padding:8px 20px;background:rgba(184,255,0,.1);border:1px solid rgba(184,255,0,.2);border-top:none;border-radius:0 0 12px 12px;font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:1.5px;color:#4a6600;text-transform:uppercase;}
+.modal-awards{margin-top:40px;padding-top:40px;border-top:1px solid var(--border);}
+.modal-awards-title{font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:700;margin-bottom:20px;}
+.awards-full-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .65s ease;}
+.reveal.visible{opacity:1;transform:none;}
+.d1{transition-delay:.08s;}.d2{transition-delay:.16s;}.d3{transition-delay:.24s;}.d4{transition-delay:.32s;}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);max-width:1200px;margin:0 auto;padding:0 56px;}
+
+@media(max-width:900px){
+  nav{padding:16px 24px;}.nav-links{display:none;}
+  #hero{padding:110px 24px 60px;}
+  .hero-row{grid-template-columns:1fr;}
+  section.ms{padding:60px 24px;}
+  .projects-grid,.tutor-grid,.vol-list,.contact-grid,.awards-grid{grid-template-columns:1fr;}
+  .wide,.tspan2{grid-column:span 1;}
+  .skills-wrapper{grid-template-columns:1fr 1fr;}
+  .exp-card{grid-template-columns:1fr;}
+  .edu-hero{grid-template-columns:1fr;}
+  .modal-inner{padding:28px;}
+  .awards-full-grid{grid-template-columns:1fr;}
+  footer{flex-direction:column;gap:8px;text-align:center;}
+  #contact .inner{padding:0 24px;}
+}
+</style>
 </head>
 <body>
-    <h1>Welcome to my website!</h1>
+
+<div id="cur"></div>
+<div id="cur-trail"></div>
+<canvas id="bgc"></canvas>
+
+<nav>
+  <div class="nav-logo">Sambhav <em>Jain</em></div>
+  <ul class="nav-links">
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#tutoring">Teaching</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="mailto:sja187@sfu.ca" class="nav-cta">Hire Me</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero" style="max-width:100%;padding-top:140px;padding-bottom:80px;">
+  <div class="blob1"></div>
+  <div class="blob2"></div>
+  <div class="hero-inner">
+    <div class="hero-eyebrow">Electronics Engineer · SFU · Coquitlam BC · Co-op Eligible</div>
+    <h1 class="hero-name">
+      <span class="stroke">SAMBHAV</span><br>
+      <span class="hl">JAIN</span>
+    </h1>
+    <div class="hero-row">
+      <div>
+        <p class="hero-desc">BASc Electronics Engineering (Honours) student at SFU, building <strong>hardware that thinks</strong> — from FPGA systems to autonomous robots. <strong>Available 8–16 months</strong> for co-op in Canada.</p>
+        <div class="hero-ctas">
+          <a href="#projects" class="btn-fill">See My Work</a>
+          <a href="#contact" class="btn-outline">Get in Touch</a>
+        </div>
+      </div>
+      <div class="hero-rc">
+        <div class="hero-badge"><span>GPA</span> 4.27 / 4.33 — President's Honour Roll</div>
+        <div class="hero-stats">
+          <div class="hstat"><span class="hstat-num"><span data-target="100">0</span><span class="u">+</span></span><span class="hstat-label">Students</span></div>
+          <div class="hstat"><span class="hstat-num"><span data-target="8">0</span><span class="u">×</span></span><span class="hstat-label">Awards</span></div>
+          <div class="hstat"><span class="hstat-num"><span data-target="4">0</span></span><span class="hstat-label">Lead Roles</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span>FPGA Development</span><span class="acc">◆</span><span>Embedded C++</span><span class="acc">◆</span><span>VHDL Design</span><span class="acc">◆</span><span>PCB Layout</span><span class="acc">◆</span><span>Altium Designer</span><span class="acc">◆</span><span>Circuit Debugging</span><span class="acc">◆</span><span>Electronics Engineering</span><span class="acc">◆</span><span>Microcontrollers</span><span class="acc">◆</span><span>Signal Conditioning</span><span class="acc">◆</span><span>RTL Simulation</span><span class="acc">◆</span>
+    <span>FPGA Development</span><span class="acc">◆</span><span>Embedded C++</span><span class="acc">◆</span><span>VHDL Design</span><span class="acc">◆</span><span>PCB Layout</span><span class="acc">◆</span><span>Altium Designer</span><span class="acc">◆</span><span>Circuit Debugging</span><span class="acc">◆</span><span>Electronics Engineering</span><span class="acc">◆</span><span>Microcontrollers</span><span class="acc">◆</span><span>Signal Conditioning</span><span class="acc">◆</span><span>RTL Simulation</span><span class="acc">◆</span>
+  </div>
+</div>
+
+<!-- PROJECTS -->
+<section class="ms" id="projects">
+  <div class="sec-label reveal">Featured Work</div>
+  <h2 class="sec-title reveal">Projects &amp; <em>Builds</em></h2>
+  <div class="projects-grid">
+    <div class="card feat wide reveal d1">
+      <div class="card-num">PROJECT_01 · FEATURED</div>
+      <h3>Autonomous Soccer Robot — Electronics &amp; Firmware</h3>
+      <div class="card-date">MAY 2025 — PRESENT</div>
+      <p>Designing and debugging power regulation and sensor circuits for autonomous soccer-playing robots at SFU. Working on sensor board design with optical flow sensor for improved motion accuracy. Reviewed circuit schematics, diagnosed PCB failures, tested motor drivers using Altium Designer, oscilloscopes, and power supplies.</p>
+      <div class="tags"><span class="tag">C++</span><span class="tag">Altium Designer</span><span class="tag">Oscilloscopes</span><span class="tag">Motor Drivers</span><span class="tag">PCB Layout</span><span class="tag">Optical Flow</span><span class="tag">Git</span></div>
+    </div>
+    <div class="card reveal d1">
+      <div class="card-num">PROJECT_02</div>
+      <h3>Digital Alarm Clock (FPGA)</h3>
+      <div class="card-date">MAY 2025 — AUG 2025</div>
+      <p>FSM-based digital alarm clock in VHDL for FPGA with real-time tracking and user-configurable alarms. Applied one-hot encoding, hardware debouncing, RTL simulation and functional verification before FPGA deployment.</p>
+      <div class="tags"><span class="tag">VHDL</span><span class="tag g">FPGA</span><span class="tag s">FSM Design</span><span class="tag">Quartus Prime</span><span class="tag g">ModelSim</span></div>
+    </div>
+    <div class="card reveal d2">
+      <div class="card-num">PROJECT_03</div>
+      <h3>C++ Pathfinding Visualizer</h3>
+      <div class="card-date">MAY 2025 — AUG 2025</div>
+      <p>C++ app simulating pathfinding algorithms (Dijkstra's, A*, BFS) with a real-time SFML GUI. Focused on efficient, modular code using modern C++ STL and smart pointers.</p>
+      <div class="tags"><span class="tag">C++</span><span class="tag g">SFML</span><span class="tag s">Algorithms</span><span class="tag">STL</span></div>
+    </div>
+    <div class="card reveal d1">
+      <div class="card-num">PROJECT_04</div>
+      <h3>Crew Recruitment Management System</h3>
+      <div class="card-date">SEP 2025 — DEC 2025</div>
+      <p>C++ OOP system managing recruits via linked lists and inheritance. Full CRUD operations, sorting and filtering across multiple attributes, strong data validation and error handling.</p>
+      <div class="tags"><span class="tag">C++</span><span class="tag g">OOP</span><span class="tag s">Linked Lists</span><span class="tag">STL</span></div>
+    </div>
+    <div class="card reveal d2">
+      <div class="card-num">PROJECT_05</div>
+      <h3>Photo-Sensor Headlamp</h3>
+      <div class="card-date">SEP 2024 — DEC 2024</div>
+      <p>Microcontroller-based headlamp with ambient light sensor for adaptive brightness control. Led circuit design in compact layouts, optimized energy efficiency, and validated sensor and LED performance.</p>
+      <div class="tags"><span class="tag">Microcontrollers</span><span class="tag g">Sensor Integration</span><span class="tag s">Circuit Design</span><span class="tag">Arduino</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- EXPERIENCE -->
+<section class="ms" id="experience">
+  <div class="sec-label reveal">Professional</div>
+  <h2 class="sec-title reveal">Work <em>Experience</em></h2>
+  <div class="exp-list">
+    <div class="exp-card reveal d1">
+      <div class="exp-left">
+        <div><div class="exp-role">Electronics Team Member</div><div class="exp-company">SFU Robot Soccer</div></div>
+        <div class="exp-period">MAY 2025 — PRESENT</div>
+      </div>
+      <div class="exp-body">
+        <ul>
+          <li>Designed and debugged power regulation and sensor circuits ensuring stable operation of robot subsystems</li>
+          <li>Reviewed and interpreted circuit schematics and PCB documentation to diagnose failures</li>
+          <li>Working on sensor board design implementing optical flow sensor for improved motion accuracy</li>
+          <li>Tested and repaired motor driver and daughter boards, resolving PCB and soldering issues</li>
+          <li>Used Altium Designer, oscilloscopes, and power supplies for circuit layout, analysis, and validation</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SKILLS -->
+<section class="ms" id="skills">
+  <div class="sec-label reveal">Technical Arsenal</div>
+  <h2 class="sec-title reveal">Skills &amp; <em>Technologies</em></h2>
+  <div class="skills-wrapper">
+    <div class="skill-card reveal d1"><div class="skill-card-title"><div class="dot"></div>Circuit Design</div><div class="skill-chips"><span class="chip">RTL / VHDL</span><span class="chip">FSM Design</span><span class="chip">Power Regulation</span><span class="chip">Signal Conditioning</span><span class="chip">PCB Debugging</span></div></div>
+    <div class="skill-card reveal d2"><div class="skill-card-title"><div class="dot" style="background:var(--lime)"></div>Embedded Systems</div><div class="skill-chips"><span class="chip">Embedded C/C++</span><span class="chip">Arduino</span><span class="chip">Raspberry Pi</span><span class="chip">FPGA Dev</span><span class="chip">Microcontrollers</span></div></div>
+    <div class="skill-card reveal d3"><div class="skill-card-title"><div class="dot" style="background:var(--sky)"></div>Simulation &amp; Verification</div><div class="skill-chips"><span class="chip">MATLAB</span><span class="chip">Simulink</span><span class="chip">Python</span><span class="chip">LTSpice / SPICE</span><span class="chip">RTL Simulation</span></div></div>
+    <div class="skill-card reveal d1"><div class="skill-card-title"><div class="dot" style="background:var(--violet)"></div>PCB Tools</div><div class="skill-chips"><span class="chip">Altium Designer</span><span class="chip">KiCad</span><span class="chip">Eagle</span><span class="chip">Schematic Capture</span><span class="chip">Soldering</span></div></div>
+    <div class="skill-card reveal d2"><div class="skill-card-title"><div class="dot" style="background:var(--orange)"></div>Programming</div><div class="skill-chips"><span class="chip">C++</span><span class="chip">VHDL</span><span class="chip">Python</span><span class="chip">MATLAB</span><span class="chip">Git / CMake</span></div></div>
+    <div class="skill-card reveal d3"><div class="skill-card-title"><div class="dot" style="background:#f59e0b"></div>Bench Tools</div><div class="skill-chips"><span class="chip">Oscilloscopes</span><span class="chip">DMMs</span><span class="chip">Power Supplies</span><span class="chip">Quartus Prime</span><span class="chip">ModelSim</span></div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- EDUCATION + AWARDS -->
+<section class="ms" id="education">
+  <div class="sec-label reveal">Academic Record</div>
+  <h2 class="sec-title reveal">Education &amp; <em>Awards</em></h2>
+
+  <div class="edu-hero reveal">
+    <div>
+      <div class="edu-degree">BASc Electronics Engineering (Honours)</div>
+      <div class="edu-prog">Concentration in Electronics</div>
+      <div class="edu-uni">Simon Fraser University</div>
+      <div class="edu-period">JAN 2024 — PRESENT · 76 units completed</div>
+      <div class="honour-pill">◆ President's &amp; Dean's Honour Roll</div>
+    </div>
+    <div class="gpa-block">
+      <div class="gpa-big">4.27</div>
+      <div class="gpa-sub">OUT OF 4.33</div>
+    </div>
+  </div>
+
+  <div class="courses-teaser reveal">
+    <div class="courses-teaser-title">Academic Highlights — Term by Term</div>
+    <div class="term-pills">
+      <div class="term-pill">2024 Spring <span class="gpa-badge">4.33</span></div>
+      <div class="term-pill">2024 Summer <span class="gpa-badge">4.25</span></div>
+      <div class="term-pill">2024 Fall <span class="gpa-badge">4.33</span></div>
+      <div class="term-pill">2025 Spring <span class="gpa-badge">4.22</span></div>
+      <div class="term-pill">2025 Summer <span class="gpa-badge">4.24</span></div>
+      <div class="term-pill">2025 Fall <span class="gpa-badge">4.25</span></div>
+    </div>
+    <p style="font-size:.88rem;color:#666;margin-bottom:20px;">All A's across 6 terms — Calculus I–III, Electric Circuits, Digital Logic, Electronic Devices, Linear Systems and more.</p>
+    <button class="btn-courses" onclick="openCourses()">View All Courses →</button>
+  </div>
+
+  <h3 style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:20px;" class="reveal">Scholarships &amp; Awards</h3>
+  <div class="awards-grid reveal">
+    <div class="award-card d1"><div class="award-icon">🏆</div><div><div class="award-name">William Roy Kuzenko &amp; Jannette Marianne Zimmerman Memorial Scholarship</div><div class="award-when">OCT 2025 — ONE student in Applied Science faculty</div></div></div>
+    <div class="award-card d2"><div class="award-icon">⚡</div><div><div class="award-name">Basil Peters Electronic Engineering Scholarship</div><div class="award-when">OCT 2025</div></div></div>
+    <div class="award-card d1"><div class="award-icon">🚗</div><div><div class="award-name">Dueck Auto Group President's Scholarship</div><div class="award-when">MAY 2025</div></div></div>
+    <div class="award-card d2"><div class="award-icon">🎓</div><div><div class="award-name">Pillon Holdings Group Scholarship in Applied Sciences</div><div class="award-when">OCT 2024</div></div></div>
+    <div class="award-card d3"><div class="award-icon">🌟</div><div><div class="award-name">University Women's Club of Vancouver Scholarship</div><div class="award-when">2024 SUMMER</div></div></div>
+    <div class="award-card d4"><div class="award-icon">📚</div><div><div class="award-name">Undergraduate Open Scholarship (×4 consecutive terms)</div><div class="award-when">2025 SPRING · SUMMER · FALL · 2026 SPRING</div></div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- TUTORING / SIDE WORK -->
+<section class="ms" id="tutoring">
+  <div class="sec-label reveal">Side Work</div>
+  <h2 class="sec-title reveal">Tutoring &amp; <em>Teaching</em></h2>
+  <div class="tutor-grid">
+    <div class="tutor-card reveal d1">
+      <div class="tutor-role">Math Tutor</div>
+      <div class="tutor-org">Mathnasium — Langley, BC</div>
+      <div class="tutor-period">SEP 2025 — PRESENT</div>
+      <ul>
+        <li>Taught 100+ students in group settings of 4–8 people, breaking down abstract math into practical strategies</li>
+        <li>Monitored progress and simultaneously introduced new material to students at different levels</li>
+        <li>Tailored explanations to learners of different ages and abilities</li>
+      </ul>
+    </div>
+    <div class="tutor-card reveal d2">
+      <div class="tutor-role">Robotics Workshop Instructor</div>
+      <div class="tutor-org">SFU Robot Soccer Outreach</div>
+      <div class="tutor-period">FEB 2025 — NOV 2025</div>
+      <ul>
+        <li>Designed and delivered Arduino-based robotics workshops for high school students to build robot cars</li>
+        <li>Managed a team of four coordinators for smooth event planning and execution</li>
+        <li>Engaged over 80 participants in hands-on STEM education</li>
+      </ul>
+    </div>
+    <div class="tutor-card reveal d1 tspan2">
+      <div class="tutor-role">Director of Workshops &amp; Organization</div>
+      <div class="tutor-org">SFU Engineering Science Student Society (ESSS)</div>
+      <div class="tutor-period">SEP 2024 — APR 2025</div>
+      <ul>
+        <li>Organized and led technical workshops including a Raspberry Pi Pico W session for 100+ students</li>
+        <li>Partnered with SFU Co-op Office to host outreach and networking events, raising co-op awareness</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- VOLUNTEER -->
+<section class="ms" id="volunteer">
+  <div class="sec-label reveal">Community</div>
+  <h2 class="sec-title reveal">Volunteer &amp; <em>Leadership</em></h2>
+  <div class="vol-list">
+    <div class="vol-card reveal d1">
+      <div class="vol-role">Outreach Program Lead</div>
+      <div class="vol-org">SFU Robot Soccer</div>
+      <div class="vol-period">FEB 2025 — NOV 2025</div>
+      <p>Designed Arduino-based robotics workshops for high school students. Managed a team of four coordinators and engaged 80+ participants in hands-on STEM learning through project-based activities.</p>
+    </div>
+    <div class="vol-card reveal d2">
+      <div class="vol-role">Director of Workshops &amp; Organization</div>
+      <div class="vol-org">SFU Engineering Science Student Society</div>
+      <div class="vol-period">SEP 2024 — APR 2025</div>
+      <p>Led technical workshops including a Raspberry Pi Pico W session for 100+ students. Partnered with SFU Co-op Office to increase career and co-op opportunity awareness campus-wide.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="inner">
+    <div class="sec-label reveal">Let's Connect</div>
+    <h2 class="sec-title reveal">Get in <em>Touch</em></h2>
+    <p class="contact-sub reveal">Open to co-op opportunities &amp; internships in electronics and embedded systems. Available 8–16 months.</p>
+    <div class="contact-grid reveal">
+      <a href="mailto:sja187@sfu.ca" class="contact-tile"><div class="ct-type">Email</div><div class="ct-val">sja187@sfu.ca</div><div class="ct-arr">↗</div></a>
+      <a href="tel:6722007178" class="contact-tile"><div class="ct-type">Phone</div><div class="ct-val">672-200-7178</div><div class="ct-arr">↗</div></a>
+      <a href="https://www.linkedin.com/in/sambhav-jain-2841a8257/" target="_blank" class="contact-tile"><div class="ct-type">LinkedIn</div><div class="ct-val">sambhav-jain-2841a8257</div><div class="ct-arr">↗</div></a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>SAMBHAV JAIN © 2026</span>
+  <span>BASc ELECTRONICS ENGINEERING (HON.) · SFU</span>
+  <span>COQUITLAM, BC</span>
+</footer>
+
+<!-- COURSES MODAL -->
+<div id="courses-modal">
+  <div class="modal-inner">
+    <button class="modal-close" onclick="closeCourses()">✕</button>
+    <div class="modal-title">Full Academic Record</div>
+    <div class="modal-sub">Simon Fraser University · BASc Electronics Engineering (Honours) · Cumulative GPA: 4.27 / 4.33</div>
+
+    <div class="term-block">
+      <div class="term-header"><span class="term-name">2024 Spring</span><span class="term-gpa">Term GPA: <span class="gv">4.33</span></span></div>
+      <table class="course-table"><thead><tr><th>Code</th><th>Course</th><th>Units</th><th>Grade</th></tr></thead><tbody>
+        <tr><td>CHEM 121</td><td>General Chemistry / Lab I</td><td>4</td><td class="grade aplus">A+</td></tr>
+        <tr><td>ECON 103</td><td>Principles of Microeconomics</td><td>4</td><td class="grade aplus">A+</td></tr>
+        <tr><td>MATH 150</td><td>Calculus I with Review</td><td>4</td><td class="grade aplus">A+</td></tr>
+        <tr><td>PHYS 120</td><td>Mechanics and Modern Physics</td><td>3</td><td class="grade aplus">A+</td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="term-block">
+      <div class="term-header"><span class="term-name">2024 Summer</span><span class="term-gpa">Term GPA: <span class="gv">4.25</span></span></div>
+      <table class="course-table"><thead><tr><th>Code</th><th>Course</th><th>Units</th><th>Grade</th></tr></thead><tbody>
+        <tr><td>COGS 100</td><td>Exploring the Mind</td><td>3</td><td class="grade aplus">A+</td></tr>
+        <tr><td>MATH 152</td><td>Calculus II</td><td>3</td><td class="grade aplus">A+</td></tr>
+        <tr><td>PHYS 121</td><td>Optics, Electricity &amp; Magnetism</td><td>3</td><td class="grade aplus">A+</td></tr>
+        <tr><td>REM 100</td><td>Global Change</td><td>3</td><td class="grade" style="color:#2563eb">A</td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="term-block">
+      <div class="term-header"><span class="term-name">2024 Fall</span><span class="term-gpa">Term GPA: <span class="gv">4.33</span></span></div>
+      <table class="course-table"><thead><tr><th>Code</th><th>Course</th><th>Units</th><th>Grade</th></tr></thead><tbody>
+        <tr><td>ENSC 100W</td><td>Engineering, Science &amp; Society</td><td>3</td><td class="grade aplus">A+</td></tr>
+        <tr><td>ENSC 105W</td><td>Process of Professional Writing</td><td>3</td><td class="grade aplus">A+</td></tr>
+        <tr><td>ENSC 120</td><td>Intro to Instrumentation</td><td>2</td><td class="grade aplus">A+</td></tr>
+        <tr><td>ENSC 151</td><td>Intro to SW Development for Engineers</td><td>4</td><td class="grade aplus">A+</td></tr>
+      </tbody></table>
+      <div class="honour-row">🏆 President's &amp; Dean's Honour Roll</div>
+    </div>
+
+    <div class="term-block">
+      <div class="term-header"><span class="term-name">2025 Spring</span><span class="term-gpa">Term GPA: <span class="gv">4.22</span></span></div>
+      <table class="course-table"><thead><tr><th>Code</th><th>Course</th><th>Units</th><th>Grade</th></tr></thead><tbody>
+        <tr><td>ENSC 180</td><td>Introduction to Engineering Analysis</td><td>3</td><td class="grade aplus">A+</td></tr>
+        <tr><td>MATH 232</td><td>Applied Linear Algebra</td><td>3</td><td class="grade aplus">A+</td></tr>
+        <tr><td>MATH 251</td><td>Calculus III</td><td>3</td><td class="grade" style="color:#2563eb">A</td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="term-block">
+      <div class="term-header"><span class="term-name">2025 Summer</span><span class="term-gpa">Term GPA: <span class="gv">4.24</span></span></div>
+      <table class="course-table"><thead><tr><th>Code</th><th>Course</th><th>Units</th><th>Grade</th></tr></thead><tbody>
+        <tr><td>ENSC 220</td><td>Electric Circuits I</td><td>4</td><td class="grade aplus">A+</td></tr>
+        <tr><td>ENSC 252</td><td>Fundamentals of Digital Logic &amp; Design</td><td>4</td><td class="grade aplus">A+</td></tr>
+        <tr><td>ENSC 280</td><td>Engineering Measurement</td><td>4</td><td class="grade" style="color:#2563eb">A</td></tr>
+        <tr><td>MATH 260</td><td>Intro to Differential Equations</td><td>3</td><td class="grade aplus">A+</td></tr>
+      </tbody></table>
+      <div class="honour-row">🏆 President's &amp; Dean's Honour Roll</div>
+    </div>
+
+    <div class="term-block">
+      <div class="term-header"><span class="term-name">2025 Fall</span><span class="term-gpa">Term GPA: <span class="gv">4.25</span></span></div>
+      <table class="course-table"><thead><tr><th>Code</th><th>Course</th><th>Units</th><th>Grade</th></tr></thead><tbody>
+        <tr><td>ENSC 204</td><td>Graphical Communications</td><td>3</td><td class="grade" style="color:#2563eb">A</td></tr>
+        <tr><td>ENSC 251</td><td>SW Design &amp; Analysis for Engineers</td><td>4</td><td class="grade aplus">A+</td></tr>
+        <tr><td>ENSC 324</td><td>Electronic Devices</td><td>3</td><td class="grade aplus">A+</td></tr>
+        <tr><td>ENSC 380</td><td>Linear Systems</td><td>3</td><td class="grade aplus">A+</td></tr>
+      </tbody></table>
+      <div class="honour-row">🏆 President's &amp; Dean's Honour Roll</div>
+    </div>
+
+    <div class="term-block">
+      <div class="term-header" style="background:#1a2e1a;"><span class="term-name">2026 Spring — In Progress</span><span class="term-gpa" style="color:#555;">Current Term</span></div>
+      <table class="course-table"><thead><tr><th>Code</th><th>Course</th><th>Units</th><th>Grade</th></tr></thead><tbody>
+        <tr><td>ENSC 327</td><td>Communication Systems</td><td>4</td><td class="grade" style="color:#888">In Progress</td></tr>
+        <tr><td>ENSC 383</td><td>Feedback Control</td><td>4</td><td class="grade" style="color:#888">In Progress</td></tr>
+        <tr><td>SEE 231</td><td>Electronic Devices and Systems</td><td>4</td><td class="grade" style="color:#888">In Progress</td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="modal-awards">
+      <div class="modal-awards-title">All Scholarships &amp; Awards</div>
+      <div class="awards-full-grid">
+        <div class="award-card"><div class="award-icon">🏆</div><div><div class="award-name">William Roy Kuzenko &amp; Jannette Marianne Zimmerman Memorial Scholarship</div><div class="award-when">2025 Fall — One student in Applied Science</div></div></div>
+        <div class="award-card"><div class="award-icon">⚡</div><div><div class="award-name">Basil Peters Electronic Engineering Scholarship</div><div class="award-when">2025 Fall</div></div></div>
+        <div class="award-card"><div class="award-icon">🚗</div><div><div class="award-name">Dueck Auto Group President's Scholarship</div><div class="award-when">2025 Summer</div></div></div>
+        <div class="award-card"><div class="award-icon">🎓</div><div><div class="award-name">Pillon Holdings Group Scholarship in Applied Sciences</div><div class="award-when">2024 Fall</div></div></div>
+        <div class="award-card"><div class="award-icon">🌟</div><div><div class="award-name">University Women's Club of Vancouver Scholarship</div><div class="award-when">2024 Summer</div></div></div>
+        <div class="award-card"><div class="award-icon">📚</div><div><div class="award-name">Undergraduate Open Scholarship (×4 terms)</div><div class="award-when">2025 Spring, Summer, Fall · 2026 Spring</div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// CURSOR
+const cur=document.getElementById('cur'),trail=document.getElementById('cur-trail');
+let mx=0,my=0,tx=0,ty=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+(function a(){tx+=(mx-tx)*.1;ty+=(my-ty)*.1;trail.style.left=tx+'px';trail.style.top=ty+'px';requestAnimationFrame(a);})();
+
+// CANVAS BACKGROUND
+const canvas=document.getElementById('bgc'),ctx=canvas.getContext('2d');
+let W,H;
+function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+resize();window.addEventListener('resize',resize);
+const orbs=[
+  {x:200,y:200,r:300,vx:.3,vy:.2,h:15},
+  {x:800,y:400,r:250,vx:-.2,vy:.3,h:84},
+  {x:1200,y:200,r:350,vx:.2,vy:-.2,h:195},
+  {x:400,y:600,r:200,vx:-.3,vy:-.2,h:270},
+  {x:1000,y:600,r:280,vx:.25,vy:.25,h:45},
+];
+function drawBg(){
+  ctx.clearRect(0,0,W,H);
+  for(const o of orbs){
+    o.x+=o.vx;o.y+=o.vy;
+    if(o.x<-o.r)o.x=W+o.r;if(o.x>W+o.r)o.x=-o.r;
+    if(o.y<-o.r)o.y=H+o.r;if(o.y>H+o.r)o.y=-o.r;
+    const g=ctx.createRadialGradient(o.x,o.y,0,o.x,o.y,o.r);
+    g.addColorStop(0,`hsla(${o.h},100%,60%,0.06)`);
+    g.addColorStop(1,'transparent');
+    ctx.beginPath();ctx.arc(o.x,o.y,o.r,0,Math.PI*2);
+    ctx.fillStyle=g;ctx.fill();
+  }
+  requestAnimationFrame(drawBg);
+}
+drawBg();
+
+// REVEAL
+const obs=new IntersectionObserver(e=>{e.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+// COUNTERS
+function counter(el,t,d=1600){let s=null;(function f(ts){if(!s)s=ts;const p=Math.min((ts-s)/d,1);el.textContent=Math.floor(p*t);if(p<1)requestAnimationFrame(f);else el.textContent=t;})(performance.now());}
+const co=new IntersectionObserver(e=>{e.forEach(e=>{if(e.isIntersecting){e.target.querySelectorAll('[data-target]').forEach(el=>counter(el,+el.dataset.target));co.unobserve(e.target);}});},{threshold:.5});
+const sr=document.querySelector('.hero-stats');if(sr)co.observe(sr);
+
+// MODAL
+function openCourses(){document.getElementById('courses-modal').classList.add('open');document.body.style.overflow='hidden';}
+function closeCourses(){document.getElementById('courses-modal').classList.remove('open');document.body.style.overflow='';}
+document.getElementById('courses-modal').addEventListener('click',e=>{if(e.target===document.getElementById('courses-modal'))closeCourses();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeCourses();});
+
+// 3D TILT
+document.querySelectorAll('.card,.exp-card,.skill-card,.tutor-card,.award-card').forEach(c=>{
+  c.addEventListener('mousemove',e=>{
+    const r=c.getBoundingClientRect(),x=((e.clientX-r.left)/r.width-.5)*10,y=((e.clientY-r.top)/r.height-.5)*-10;
+    c.style.transform=`perspective(800px) rotateX(${y}deg) rotateY(${x}deg) translateY(-5px)`;
+  });
+  c.addEventListener('mouseleave',()=>{c.style.transform='';});
+});
+</script>
 </body>
 </html>
